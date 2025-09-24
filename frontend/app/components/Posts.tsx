@@ -7,6 +7,8 @@ import { LuMessageCircle } from "react-icons/lu";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
+import { AiOutlineLike } from "react-icons/ai";
+
 
 interface postType {
   id: string;
@@ -16,6 +18,9 @@ interface postType {
   username: string;
   comments?: { comment: ""; id: ""; userId: "" }[];
   user?: { profile: ""; username: "" };
+}
+interface postLike {
+  postId: string;
 }
 
 interface commentType {
@@ -29,6 +34,7 @@ interface commentType {
 
 export const Posts = () => {
   const [posts, setPosts] = useState<postType[]>([]);
+  const [like, setLike] = useState<postLike[]>([]);
   const [commentOpen, setCommentOpen] = useState({ open: false, id: "" });
   const [comment, setComment] = useState("");
   const [viewComment, setViewComment] = useState(false);
@@ -97,6 +103,32 @@ export const Posts = () => {
     setAllComment([]);
   }
 
+  useEffect(() => {
+    async function getLike() {
+      const result = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/like`,
+        { withCredentials: true }
+      );
+      // console.log(result.data)
+      result.data.posts.map((cur: postLike) => {
+        setLike((prev) => [
+          ...prev,
+          {
+            postId: cur.postId,
+          },
+        ]);
+      });
+    }
+    getLike();
+
+    return ()=>{
+      setPosts([]);
+    }
+  }, []);
+
+  async function handelLike(postId:string){
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/like/post`,{postId},{withCredentials:true});
+  }
   return (
     <div className="p-4 rounded mt-2 flex flex-col gap-4 xl:mx-9 relative">
       {posts.map((cur,index) => (
@@ -143,9 +175,14 @@ export const Posts = () => {
             <span onClick={() => getComments(cur.id)} className="cursor-pointer">
             View Comments
           </span>
-
+          
           <span onClick={() =>handelClose() } className="mt-3 ml-8 cursor-pointer">
             Hide
+          </span>
+          <span onClick={() =>handelLike(cur.id) } className="mt-3 ml-8 cursor-pointer">
+            {
+             <AiOutlineLike key={index} className={`${like.find(c=>c.postId == cur.id) ? "text-red-500" : ""}`}/>
+            }
           </span>
           </div>
 
