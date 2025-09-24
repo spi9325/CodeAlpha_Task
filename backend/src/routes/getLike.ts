@@ -9,6 +9,7 @@ getLike.get("/like",verifyUser, async (req, res) => {
         const like = await prisma.like.findMany(where:{
             userId:req.id!
         });
+        
         if(like){
             res.status(200).json({like});
         }else{
