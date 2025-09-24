@@ -100,3 +100,9 @@ model Comment {
   user    User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+}

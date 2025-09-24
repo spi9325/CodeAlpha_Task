@@ -15,6 +15,8 @@ import { getUserPosts } from "./routes/getUserPosts.js";
 import { getProfile } from "./routes/getProfile.js";
 import { addComment } from "./routes/addComment.js";
 import { getComments } from "./routes/getComment.js";
+import { likePost } from "./routes/likePost.js";
+import { getLike } from "./routes/getLike.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,6 +75,8 @@ app.use("/get",getUserPosts)
 app.use("/get",getProfile)
 app.use("/add",addComment)
 app.use("/get",getComments)
+app.use("/like",likePost)
+app.use("/get",getLike)
 
 
 app.listen(PORT,()=>{console.log('listning on port '+PORT)});
